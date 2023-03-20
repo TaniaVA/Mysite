@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 django = "~=4.0"
+django-crispy-forms = "*"
+crispy-bootstrap5 = "*"
 
 [dev-packages]
 

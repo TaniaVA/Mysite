@@ -2,12 +2,13 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
+
 # Create your tests here.
 class SignupPageTests(TestCase):
     def test_url_exists_at_correct_location(self):
 
         """Этот тест проверяет, что при запросе к signup
-        возвращает код состояния
+        возвращается код состояния
         :return: 200 (успех)
         """
         response = self.client.get("/accounts/signup/")
@@ -43,9 +44,6 @@ class SignupPageTests(TestCase):
         self.assertEqual(get_user_model().objects.all().count(), 1)
         self.assertEqual(get_user_model().objects.all()[0].username, "testuser")
         self.assertEqual(get_user_model().objects.all()[0].email, "testuser@mail.com")
-
-
-
 
 
 

@@ -4,8 +4,8 @@
 {% block title %}Войти{% endblock title %}
 
 {% block content %}
-<h2>Войти</h2>
-<div class="col-2">
+<div class="col-2" style="margin: 0 auto;">
+    <h2>Форма для входа</h2>
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}

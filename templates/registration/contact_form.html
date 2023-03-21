@@ -9,15 +9,15 @@
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}
-        <div>
+        <div class="p-3 mb-15">
             <label for="fname">Имя</label>
             <input type="text" id="fname" name="firstname" placeholder="Ваше имя..">
         </div>
-        <div>
+        <div class="p-3 mb-15">
             <label for="lname">Фамилия</label>
             <input type="text" id="lname" name="lastname" placeholder="Ваша фамилия..">
         </div>
-        <div>
+        <div class="p-3 mb-15">
             <label for="subject">Сообщение</label>
             <textarea id="subject" name="subject" placeholder="Написать нечто.." style="height:200px"></textarea>
         </div>

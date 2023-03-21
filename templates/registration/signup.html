@@ -4,8 +4,8 @@
 {% block title %}Регистрация{% endblock title %}
 
 {% block content %}
-<h2>Регистрация</h2>
-<div class="col-3">
+<div class="col-3" style="margin: 0 auto;">
+    <h2>Регистрация</h2>
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}

@@ -40,38 +40,39 @@
                     <li class="nav-item"><a href="#" class="nav-link">+ Пост</a></li>
                 </ul>
                 <!-- Контейнер для ссылок на телефон и почту -->
+                {% if user.is_authenticated %}
                 <div class="d-flex align-items-center">
-                    <div class="me-3">
-                        <a href="tel:+375(33)674-87-15"><i class="telephone-fill"></i>+375(33)674-87-15</a>
+                    <div class="my-auto px-3">
+                        <a href="tel:+375(33)674-87-15"><i class="bi bi-telephone-fill"></i>+375(33)674-87-15</a>
                     </div>
-                    <div><a href="{% url 'contact_form' %}"><i class="envelope-fill"></i>broNNaiL_A@mail.ru</a>
+                    <div class="my-auto px-3">
+                        <a href="mailto:broNNaiL_A@mail.ru"><i class="bi bi-envelope-fill"></i>broNNaiL_A@mail.ru</a>
                     </div>
                 </div>
-                <ul>
-                    <!-- Контейнер для ссылок на формы -->
-                    {% if user.is_authenticated %}
-                    <div class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            {{ user.username}}
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'password_change' %}">Изменить пароль</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
-                        </ul>
-                        {% else %}
+                <!-- Контейнер для ссылок на формы -->
+                <div class="nav-item dropdown my-auto px-3">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        {{ user.username}}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'password_change' %}">Изменить пароль</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
+                    </ul>
+                    {% else %}
+                    <div class="d-flex flex-column">
                         <div class="nav-item">
                             <a class="nav-link" href="{% url 'login' %}">Войти</a>
                         </div>
                         <div class="nav-item">
                             <a class="nav-link" href="{% url 'signup' %}">Регистрация</a>
                         </div>
-                        {% endif %}
                     </div>
-                </ul>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>

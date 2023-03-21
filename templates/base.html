@@ -40,7 +40,6 @@
                     <li class="nav-item"><a href="#" class="nav-link">+ Пост</a></li>
                 </ul>
                 <!-- Контейнер для ссылок на телефон и почту -->
-                {% if user.is_authenticated %}
                 <div class="d-flex align-items-center">
                     <div class="my-auto px-3">
                         <a href="tel:+375(33)674-87-15"><i class="bi bi-telephone-fill"></i>+375(33)674-87-15</a>
@@ -49,6 +48,7 @@
                         <a href="mailto:broNNaiL_A@mail.ru"><i class="bi bi-envelope-fill"></i>broNNaiL_A@mail.ru</a>
                     </div>
                 </div>
+                {% if user.is_authenticated %}
                 <!-- Контейнер для ссылок на формы -->
                 <div class="nav-item dropdown my-auto px-3">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"

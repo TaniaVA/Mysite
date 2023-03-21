@@ -139,4 +139,10 @@ LOGOUT_REDIRECT_URL = "home"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'bronnail_a@mail.ru'
+EMAIL_HOST_PASSWORD = 'Y7Ddpedk5TPxEkbMGcpq'
+EMAIL_USE_SSL = True
+DEFAULT_FROM_EMAIL = 'bronnail_a@mail.ru'

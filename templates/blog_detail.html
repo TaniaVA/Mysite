@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row d-flex">
+        <div class="col-lg-8 px-md-5 py-5">
+            <div class="row pt-md-4">
+                <div class="blog-entry">
+                    <h1 class="mb-3">{{ blog.title }}</h1>
+                    <div class="meta-wrap">
+                            <p class="meta">
+                                <span><i class="icon-user mr-2"></i>by {{ blog.author }}</span>
+                                <span><i class="icon-calendar mr-2"></i>{{ blog.date }}</span>
+                                <span><i class="icon-comment2 mr-2"></i>5 Comment</span>
+                            </p>
+                        </div>
+                    <p>{{ blog.body|linebreaksbr }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% if user.is_staff %}
+<p><a href="{% url 'blog_edit' blog.pk %}">Изменить пост</a></p>
+<p><a href="{% url 'blog_delete' blog.pk %}">Удалить пост</a></p>
+<p><a href="{% url 'blog_list' %}"> Содержание</a></p>
+ {% endif %}
+{% endblock content %}

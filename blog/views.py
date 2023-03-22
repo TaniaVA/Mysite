@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -5,7 +6,7 @@ from .models import Blog
 
 
 # Create your views here.
-class BlogListView(ListView):
+class BlogListView(LoginRequiredMixin, ListView):
     """
     Display a list of all Blog objects.
 
@@ -16,7 +17,7 @@ class BlogListView(ListView):
     template_name = "blog_list.html"
 
 
-class BlogDetailView(DetailView):
+class BlogDetailView(LoginRequiredMixin, DetailView):
     """
     Display a detailed view of a single Blog object.
 
@@ -27,7 +28,7 @@ class BlogDetailView(DetailView):
     template_name = "blog_detail.html"
 
 
-class BlogCreateView(CreateView):
+class BlogCreateView(LoginRequiredMixin, CreateView):
     """
     Create a new Blog object.
 
@@ -39,7 +40,7 @@ class BlogCreateView(CreateView):
     fields = ['title', 'author', 'body',]
 
 
-class BlogUpdateView(UpdateView):
+class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """
     Update an existing Blog object.
 
@@ -50,8 +51,12 @@ class BlogUpdateView(UpdateView):
     template_name = "blog_edit.html"
     fields = ['title', 'body',]
 
+    def test_func(self):
+        obj = self.get_object()
+        return obj.author == self.request.user
 
-class BlogDeleteView(DeleteView):
+
+class BlogDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     """
     Delete an existing Blog object.
 
@@ -61,3 +66,7 @@ class BlogDeleteView(DeleteView):
     model = Blog
     template_name = "blog_delete.html"
     success_url = reverse_lazy("blog_list")
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.author == self.request.user

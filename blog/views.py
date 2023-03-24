@@ -6,7 +6,7 @@ from .models import Blog
 
 
 # Create your views here.
-class BlogListView(LoginRequiredMixin, ListView):
+class BlogListView(ListView):
     """
     Display a list of all Blog objects.
 
@@ -17,7 +17,7 @@ class BlogListView(LoginRequiredMixin, ListView):
     template_name = "blog_list.html"
 
 
-class BlogDetailView(LoginRequiredMixin, DetailView):
+class BlogDetailView(DetailView):
     """
     Display a detailed view of a single Blog object.
 

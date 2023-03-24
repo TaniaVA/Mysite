@@ -40,11 +40,13 @@ INSTALLED_APPS = [
     # crispies
     "crispy_forms",
     "crispy_bootstrap5",
+    # libraries
+    'schedule',
     # my apps
     'accounts',
     'frontend',
     'blog',
-
+    'appointments'
 ]
 
 MIDDLEWARE = [

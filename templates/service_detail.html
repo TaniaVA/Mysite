@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ object.name }}</h1>
+    <form action="{% url 'master_list' %}" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-8">
+                <p class="lead">{{ object.description }}</p>
+                <p class="lead">Длительность: {{ object.duration }} часа</p>
+                <p class="lead">Цена: {{ object.price }} рублей</p>
+                <a href="{% url 'master_list' %}" class="btn btn-outline-success">Записаться</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}

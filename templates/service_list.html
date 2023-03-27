@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="col-8" style="margin: 0 auto;">
+    <h1>Выбор услуги</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="table-responsive">
+            <table class="table table-borderless align-middle">
+                {% for service in object_list %}
+                <thead>
+                <tr>
+                    <td>
+                        <a class="title {% if service.pk == service_pk %}active{% endif %}"
+                           href="{% url 'service_detail' service.pk %}">{{ service.name }}</a>
+                    </td>
+                    <td>{{ service.price }} рублей</td>
+                    <td>{{ service.duration }} часа</td>
+                    <td><a href="{% url 'service_detail' service.pk %}" class="btn btn-outline-success">Записаться</a></td>
+                    {% if user.is_staff %}
+                    <td><a href="{% url 'service_edit' service.pk %}" class="btn btn-outline-info">Изменить услугу</a></td>
+                    <td><a href="{% url 'service_delete' service.pk %}" class="btn btn-outline-warning">Удалить услугу</a></td>
+                    {% endif %}
+                </tr>
+                </thead>
+                {% endfor %}
+            </table>
+        </div>
+        {% if user.is_staff %}
+        <p><a href="{% url 'service_new' %}" class="btn btn-outline-success"> Добавить услугу</a></p>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

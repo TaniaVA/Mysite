@@ -3,6 +3,8 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
+from django.urls import reverse
+
 
 
 class Service(models.Model):
@@ -13,15 +15,22 @@ class Service(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse("service_list")
 
 class Master(models.Model):
     name = models.CharField(max_length=150)
     user = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE)
     services = models.ManyToManyField(Service)
     availability = models.JSONField(default=list)
+    description = models.CharField(max_length=255, default='Мастер по маникюру и педикюру')
+
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse("master_list")
 
     def update_availability(self, days, time):
         """
@@ -71,6 +80,8 @@ class Appointment(models.Model):
     def __str__(self):
         return f'{self.service} with {self.master} on {self.date} at {self.time}'
 
+    def get_absolute_url(self):
+        return reverse("appointment_detail", kwargs={"pk": self.pk})
 
 class Availability(models.Model):
     master = models.ForeignKey(

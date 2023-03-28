@@ -79,12 +79,7 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
     template_name = "blog_new.html"
     fields = ['title', 'author', 'body',]
 
-<<<<<<< HEAD
-
 class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-=======
-class BlogUpdateView(UpdateView):
->>>>>>> function
     """
     Update an existing Blog object.
 

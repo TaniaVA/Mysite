@@ -17,7 +17,7 @@
                             <p class="meta">
                                 <span><i class="icon-user mr-2"></i>by {{ blog.author }}</span>
                                 <span><i class="icon-calendar mr-2"></i>{{ blog.date }}</span>
-                                <span><i class="icon-comment2 mr-2"></i>5 Comment</span>
+                                <span><i class="icon-comment2 mr-2"></i>{{ blog.comment_set.all.count }} комментариев</span>
                             </p>
                         </div>
                         <p class="mb-4">{{ blog.body }}</p>

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     # libraries
     'schedule',
+    'djangobower',
     # my apps
     'accounts',
     'frontend',
@@ -128,7 +130,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATICFILES_DIRS = [
+  os.path.join(BASE_DIR, "static"),
+]
+STATICFILES_FINDERS = 'djangobower.finders.BowerFinder',
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -150,3 +155,13 @@ EMAIL_HOST_USER = 'bronnail_a@mail.ru'
 EMAIL_HOST_PASSWORD = 'Y7Ddpedk5TPxEkbMGcpq'
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = 'bronnail_a@mail.ru'
+
+TEMPLATE_CONTEXT_PROCESSORS = "django.template.context_processors.request"
+
+BOWER_COMPONENTS_ROOT = '/PROJECT_ROOT/components/'
+
+BOWER_INSTALLED_APPS = (
+    'jquery',
+    'jquery-ui',
+    'bootstrap'
+)

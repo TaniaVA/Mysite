@@ -77,7 +77,7 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
     """
     model = Blog
     template_name = "blog_new.html"
-    fields = ['title', 'author', 'body',]
+    fields = ['image', 'title', 'author', 'body',]
 
 class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """
@@ -88,7 +88,7 @@ class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """
     model = Blog
     template_name = "blog_edit.html"
-    fields = ['title', 'body',]
+    fields = ['image', 'title', 'body',]
 
     def test_func(self):
         obj = self.get_object()

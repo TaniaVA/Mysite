@@ -11,7 +11,11 @@
             {% for master in object_list %}
             <div class="col">
                 <div class="card text-center" style="width: 20rem">
-                    <img src="..." class="card-img-top" alt="...">
+                    {% if master.image %}
+                    <img src="{{ master.image.url }}" class="card-img-top" alt=" ">
+                    {% else %}
+                    <img src="/mediafiles/images/profile-placeholder.png" width="200" alt="" class="card-img-top">
+                    {% endif %}
                     <div class="card-body" style="margin: 0 0 2px">
                         <h5 class="card-title {% if master.pk == master_pk %}active{% endif %}">{{ master.name }}</h5>
                         <p class="card-text">{{ master.description }} </p>

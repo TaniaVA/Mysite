@@ -6,6 +6,9 @@
 {% block content %}
 <div class="col-8" style="margin: 0 auto;">
     <h1>Изменить данные мастера</h1>
+    {% if master.image %}
+    <p><img src="{{ master.image.url }}" width="200" alt="" class="img-fluid"></p>
+    {% endif %}
     <form action="" method="post">
         {% csrf_token %}
         {{ form|crispy }}

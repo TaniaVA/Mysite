@@ -19,6 +19,7 @@ class Service(models.Model):
         return reverse("service_list")
 
 class Master(models.Model):
+    image = models.ImageField(upload_to='images/', default='images/profile-placeholder.png', blank=True)
     name = models.CharField(max_length=150)
     user = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE)
     services = models.ManyToManyField(Service)

@@ -71,7 +71,7 @@ class MasterUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class MasterCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Master
     template_name = "master_new.html"
-    fields = ['name',]
+    fields = ['image', 'name',]
 
 class MasterDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Master

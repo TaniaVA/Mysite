@@ -16,9 +16,10 @@
                         </p>
                     </div>
                     {% if blog.image %}
-                    <p><img src="{{ blog.image.url }}" alt="" width="40%"  display="block" border-radius="15px"></p>
+                    <p><img src="{{ blog.image.url }}" alt="" width="40%" display="block" border-radius="15px"></p>
                     {% else %}
-                    <p><img src="/media/images/placeholder.png" alt="" width="40%"  display="block" border-radius="15px"></p>
+                    <p><img src="/media/images/placeholder.png" alt="" width="40%" display="block" border-radius="15px">
+                    </p>
                     {% endif %}
                     <p>{{ blog.body|linebreaksbr }}</p>
                 </div>
@@ -29,7 +30,14 @@
 <hr>
 <h4>Комментарии</h4>
 {% for comment in blog.comment_set.all %}
-<p>{{ comment.author }} &middot; {{ comment }}</p>
+<p>
+    {% if comment.author.customerphoto_set.last %}
+    <img src="{{ comment.author.customerphoto_set.last.photo.url }}" alt="commenter photo" style="border-radius: 15px" height="30">
+    {% else %}
+    <img src="/media/users/profile_placeholder.jpg" alt="commenter photo" style="border-radius: 15px" height="30">
+    {% endif %}
+    <a href="{% url 'profile' comment.author.pk %}">{{ comment.author }}</a>
+     &middot; {{ comment }}</p>
 {% endfor %}
 <hr>
 {% if user.is_authenticated %}
@@ -46,6 +54,5 @@
 <p><a href="{% url 'blog_list' %}"> Оглавление</a></p>
 {% endif %}
 {% endblock content %}
-
 
 

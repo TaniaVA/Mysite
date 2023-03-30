@@ -1,21 +1,17 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %}Profile Page{% endblock title %}
 
 {% block content %}
 <div class="card">
     <h2>{{ object.username }}</h2>
-    {% if object.customerphoto_set.last %}
+    {% if user.customerphoto_set.last %}
     <img src="{{ object.customerphoto_set.last.photo.url }}" alt="commenter photo" style="border-radius: 15px"
          height="150" width="150">
     {% else %}
-    <img src="/users/profile-placeholder.png" alt="commenter photo" style="border-radius: 15px" height="150"
+    <img src="/users/profile_placeholder.jpg" alt="commenter photo" style="border-radius: 15px" height="150"
          width="150">
-    {% endif %}
-    {% if object == user %}
-    <div>
-        <a href="{% url 'update_profile' object.pk %}">Изменить профиль</a>
-    </div>
     {% endif %}
 </div>
 {% endblock content %}

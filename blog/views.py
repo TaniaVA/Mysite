@@ -1,10 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import ListView, DetailView
 from django.views.generic import ListView, DetailView, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views import View
 from django.urls import reverse_lazy, reverse
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 from .models import Blog
 from .forms import CommentForm
@@ -77,7 +78,7 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
     """
     model = Blog
     template_name = "blog_new.html"
-    fields = ['title', 'author', 'body',]
+    fields = ['title', 'author', 'body', 'image', ]
 
 class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """
@@ -88,11 +89,24 @@ class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """
     model = Blog
     template_name = "blog_edit.html"
-    fields = ['title', 'body',]
+    fields = ['title', 'body', 'image', ]
 
     def test_func(self):
         obj = self.get_object()
         return obj.author == self.request.user
+
+    def form_valid(self, form):
+        # Получаем объект блога из базы данных
+        blog = form.save(commit=False)
+        # Получаем загруженное изображение из формы
+        image = form.cleaned_data['image']
+        # Если загружено изображение, то сохраняем его в файловой системе
+        if image:
+            file_name = default_storage.save(image.name, ContentFile(image.read()))
+            blog.image = file_name
+        # Сохраняем изменения в базе данных
+        blog.save()
+        return super().form_valid(form)
 
 
 class BlogDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

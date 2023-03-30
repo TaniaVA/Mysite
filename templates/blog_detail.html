@@ -15,6 +15,11 @@
                             <span><i class="icon-comment2 mr-2"></i>{{ blog.comment_set.all.count }} комментариев</span>
                         </p>
                     </div>
+                    {% if blog.image %}
+                    <p><img src="{{ blog.image.url }}" alt="" width="40%"  display="block" border-radius="15px"></p>
+                    {% else %}
+                    <p><img src="/media/images/placeholder.png" alt="" width="40%"  display="block" border-radius="15px"></p>
+                    {% endif %}
                     <p>{{ blog.body|linebreaksbr }}</p>
                 </div>
             </div>
@@ -39,7 +44,7 @@
 <p><a href="{% url 'blog_edit' blog.pk %}">Изменить пост</a></p>
 <p><a href="{% url 'blog_delete' blog.pk %}">Удалить пост</a></p>
 <p><a href="{% url 'blog_list' %}"> Оглавление</a></p>
- {% endif %}
+{% endif %}
 {% endblock content %}
 
 

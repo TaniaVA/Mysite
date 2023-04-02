@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block title %}Изменить данные мастера{% endblock title %}
 
 {% block content %}
 <div class="col-8" style="margin: 0 auto;">
     <h1>Изменить данные мастера</h1>
-    <form action="" method="post">
+    <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form|crispy }}
         <button class="btn btn-primary" type="submit">Сохранить изменения</button>

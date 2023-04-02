@@ -14,12 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic.base import TemplateView
-
-
+from django.views.i18n import JavaScriptCatalog
+from django.conf.urls.static import serve
 
 urlpatterns = [
     path('schedule/', include('schedule.urls')),
@@ -29,6 +27,11 @@ urlpatterns = [
     path('appointments/', include('appointments.urls')),
     path('blog/', include('blog.urls')),
     path('', include('frontend.urls')),
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += [
+        path('static/<path:path>', serve, {'document_root': settings.STATIC_ROOT}),
+        path('media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),
+    ]

@@ -1,7 +1,5 @@
 import datetime
-
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.urls import reverse
 
@@ -20,10 +18,12 @@ class Service(models.Model):
 
 class Master(models.Model):
     name = models.CharField(max_length=150)
+    photo = models.ImageField(upload_to='users/', default='users/profile_placeholder.jpg', blank=True)
     user = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE)
     services = models.ManyToManyField(Service)
     availability = models.JSONField(default=list)
     description = models.CharField(max_length=255, default='Мастер по маникюру и педикюру')
+    schedule = models.FileField(upload_to='schedules/', blank=True)
 
 
     def __str__(self):
@@ -32,7 +32,32 @@ class Master(models.Model):
     def get_absolute_url(self):
         return reverse("master_list")
 
-    def update_availability(self, days, time):
+    def get_availability(self, date_range):
+        # переменная для хранения пустых слотов
+        availability = []
+        # Итерируем по всем датам
+        for day in date_range:
+            day_schedule = self.schedule.get(str(day.date()), {})
+            print(f"Schedule for day {day.date()}: {day_schedule}")
+            # Итерируем по всем услугам
+            for service in self.services.all():
+                # Получаем из get запроса дату начала услуги
+                start_time = day_schedule.get(str(service.id))
+                if not start_time:
+                    continue
+                    #  Высчитаем окончание добавив к начальному времени продолжительность
+                start_time = timezone.make_aware(
+                    datetime.datetime.combine(day.date(), datetime.time.fromisoformat(start_time)))
+                end_time = start_time + service.duration
+                # Если мастер не доступен пропускаем эту итерацию
+                if not self.is_available(day.date(), start_time.time()):
+                    continue
+                    # Составляем список из дат, начала выполнения услуги и окончания
+                availability.append((day.date(), start_time.time(), end_time.time()))
+        return availability
+
+
+    def update_availability(self, start_date, end_date):
         """
         Метод, который будет обновлять поле availability на основе
         выбранных мастером дней и времени выполнения услуг
@@ -40,14 +65,15 @@ class Master(models.Model):
         # days - список дней, в которые доступен мастер
         # time - время выполнения услуги
         availability = []
-        for day in days:
-            start_time = timezone.make_aware(
-                timezone.datetime.combine(day, time)
-            )
-            end_time = start_time + self.services.first().duration
-            availability.append(
-                (day, start_time.time(), end_time.time())
-            )
+        for d in range((end_date - start_date).days + 1):
+            day = start_date + datetime.timedelta(days=d)
+            day_schedule = self.schedule.get(str(day), {})
+            for service in self.services.all():
+                start_time = day_schedule.get(str(service.id), '09:00')
+                start_time = timezone.make_aware(
+                    datetime.datetime.combine(day, datetime.time.fromisoformat(start_time)))
+                end_time = start_time + service.duration
+                availability.append((day, start_time.time(), end_time.time()))
         self.availability = availability
         self.save()
 
@@ -76,6 +102,19 @@ class Appointment(models.Model):
     master = models.ForeignKey(Master, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
+
+
+    AVAILABLE = 'AV'
+    BOOKED = 'BK'
+    STATUS_CHOICES = [
+        (AVAILABLE, 'Available'),
+        (BOOKED, 'Booked')
+    ]
+    status = models.CharField(
+        max_length=2,
+        choices=STATUS_CHOICES,
+        default=AVAILABLE
+    )
 
     def __str__(self):
         return f'{self.service} with {self.master} on {self.date} at {self.time}'

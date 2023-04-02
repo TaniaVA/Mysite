@@ -8,11 +8,11 @@
         {% csrf_token %}
         {{ form|crispy }}
         <div class="row">
-            {% for master in object_list %}
+            {% for master in masters %}
             <div class="col">
                 <div class="card text-center" style="width: 20rem">
-                    {% if master.photo_set.last %}
-                    <img src="{{ master.photo_set.last.url }}" class="card-img-top" alt="master photo">
+                    {% if master.photo %}
+                    <img src="{{ master.photo.url }}" class="card-img-top" alt="master photo">
                     {% else %}
                     <img src="/media/users/profile_placeholder.jpg" alt="master photo">
                     {% endif %}
@@ -20,7 +20,9 @@
                         <h5 class="card-title {% if master.pk == master_pk %}active{% endif %}">{{ master.name }}</h5>
                         <p class="card-text">{{ master.description }} </p>
                         <p><a href="tel:+375(33)674-87-15"><i class="bi bi-telephone-fill"></i>+375(33)674-87-15</a></p>
-                        <p><a href="{% url 'appointment_create' %}" class="btn btn-outline-primary">Записаться</a></p>
+                        <p>
+                            <a href="{% url 'appointment_create' %}?service_id={{ service.id }}&master_id={{ master.id }}&year={{ selected_date.year }}&month={{ selected_date.month }}&day={{ selected_date.day }}&start_hour={{ start_time.hour }}&start_minute={{ start_time.minute }}"
+                               class="btn btn-outline-primary">Записаться</a></p>
                         {% if user.is_staff %}
                         <p><a href="{% url 'master_edit' master.pk %}" class="btn btn-outline-info">Изменить мастера</a>
                         </p>
@@ -39,3 +41,6 @@
     </form>
 </div>
 {% endblock content %}
+
+
+

@@ -1,30 +1,60 @@
 {% extends "base.html" %}
+
 {% load crispy_forms_tags %}
 
 {% block content %}
-  <div class="container">
-    <h1>{{ object.name }}</h1>
-    <div class="row">
-      <div class="col-md-8">
-        <p class="lead">{{ object.description }}</p>
-        <p class="lead">Длительность: {{ object.duration }} часа</p>
-        <p class="lead">Цена: {{ object.price }} рублей</p>
-      </div>
-      <div class="col-md-4">
-        <form action="{% url 'appointment_detail' %}" method="post">
-          {% csrf_token %}
-          <input type="hidden" name="service" value="{{ object.pk }}">
-          <div class="form-group">
-            <label for="date">Дата:</label>
-            <input type="date" name="date" id="date" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="time">Время:</label>
-            <input type="time" name="time" id="time" class="form-control">
-          </div>
-          <button type="submit" class="btn btn-primary">Записаться</button>
-        </form>
-      </div>
-    </div>
-  </div>
-{% endblock content %}
+<div class="col-6" style="margin: 0 auto;">
+    <h1>Записаться на услугу</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% crispy form %}
+        <div class="form-group">
+            <label for="{{ form.date.id_for_label }}">Дата:</label>
+            <div class="input-group date" id="datepicker" data-target-input="nearest">
+                {{ form.date }}
+                <div class="input-group-append" data-target="#datepicker" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>
+        </div>
+        <div id="times"></div>
+        <button type="submit">Записаться</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script>
+    $(function () {
+        $('#datepicker').datetimepicker({
+            format: 'YYYY-MM-DD',
+            daysOfWeekDisabled: [0, 6],
+            minDate: moment(),
+            allowInputToggle: true,
+            useCurrent: false,
+            locale: 'ru',
+            disabledDates: JSON.parse('{{ disabled_dates|safe }}'),
+        });
+
+        $('#datepicker').on('change.datetimepicker', function () {
+            var selectedDate = $(this).find('input').val();
+            $.ajax({
+                url: '/get_availability/',
+                data: {'date': selectedDate},
+                dataType: 'json',
+                success: function (data) {
+                    var times = data.times;
+                    var html = '<ul>';
+                    for (var i = 0; i < times.length; i++) {
+                        html += '<li>' + times[i] + '</li>';
+                    }
+                    html += '</ul>';
+                    $('#times').html(html);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

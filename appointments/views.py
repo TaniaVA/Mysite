@@ -141,7 +141,7 @@ class AppointmentCreateView(CreateView):
         availability = get_object_or_404(Availability, id=form.cleaned_data['time'])
         # Создаем объект записи
         appointment = form.save(commit=False)
-        appointment.master = availability.master
+        appointment.master = self.object.master
         appointment.date = availability.date
         appointment.time = availability.start_time
         appointment.save()

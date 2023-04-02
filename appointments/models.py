@@ -2,6 +2,8 @@ import datetime
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
+import json
+from datetime import datetime
 
 
 
@@ -31,6 +33,34 @@ class Master(models.Model):
 
     def get_absolute_url(self):
         return reverse("master_list")
+
+    def load_master_schedule(master_id, start_date, end_date):
+        try:
+            master = Master.objects.get(id=master_id)
+        except Master.DoesNotExist:
+            print(f'Master with id {master_id} does not exist')
+            return
+
+        with open('schedule.py', 'r') as f:
+            schedule_data = json.load(f)
+
+        for date_str, services_schedule in schedule_data.items():
+            date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            if date < start_date or date > end_date:
+                continue
+
+            for service_id, start_time_str in services_schedule.items():
+                service = Service.objects.get(id=service_id)
+                start_time = datetime.strptime(start_time_str, '%H:%M:%S').time()
+
+                if not master.is_available(date, start_time):
+                    continue
+
+                master_schedule = master.schedule.get(str(date), {})
+                master_schedule[str(service_id)] = start_time.strftime('%H:%M:%S')
+                master.schedule[str(date)] = master_schedule
+
+        master.update_availability(start_date, end_date)
 
     def get_availability(self, date_range):
         # переменная для хранения пустых слотов
@@ -104,17 +134,17 @@ class Appointment(models.Model):
     time = models.TimeField()
 
 
-    AVAILABLE = 'AV'
-    BOOKED = 'BK'
-    STATUS_CHOICES = [
-        (AVAILABLE, 'Available'),
-        (BOOKED, 'Booked')
-    ]
-    status = models.CharField(
-        max_length=2,
-        choices=STATUS_CHOICES,
-        default=AVAILABLE
-    )
+    # AVAILABLE = 'AV'
+    # BOOKED = 'BK'
+    # STATUS_CHOICES = [
+    #     (AVAILABLE, 'Available'),
+    #     (BOOKED, 'Booked')
+    # ]
+    # status = models.CharField(
+    #     max_length=2,
+    #     choices=STATUS_CHOICES,
+    #     default=AVAILABLE
+    # )
 
     def __str__(self):
         return f'{self.service} with {self.master} on {self.date} at {self.time}'

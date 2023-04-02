@@ -5,9 +5,6 @@ from datetime import datetime
 
 
 class AppointmentForm(forms.ModelForm):
-    time = forms.TimeField()
-    date = forms.DateField(widget=forms.Select(choices=[]))
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['date'].widget.attrs['class'] = 'datepicker'
@@ -15,7 +12,7 @@ class AppointmentForm(forms.ModelForm):
 
     class Meta:
         model = Appointment
-        fields = ['service', 'master', 'date', 'time']
+        fields = ['service', 'date', 'time']
 
     def clean_time(self):
         date = self.cleaned_data.get('date')

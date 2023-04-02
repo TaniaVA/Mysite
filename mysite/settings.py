@@ -209,6 +209,7 @@ INSTALLED_APPS = [
     # crispies
     "crispy_forms",
     "crispy_bootstrap5",
+    "bootstrap_datepicker_plus",
     # libraries
     'schedule',
     'djangobower',

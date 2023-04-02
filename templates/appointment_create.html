@@ -1,60 +1,16 @@
 {% extends "base.html" %}
-
 {% load crispy_forms_tags %}
 
 {% block content %}
+{{ block.super }}
+{{ form.media }}
 <div class="col-6" style="margin: 0 auto;">
     <h1>Записаться на услугу</h1>
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}
-<!--        <div class="form-group">-->
-<!--            <label for="{{ form.date.id_for_label }}">Дата:</label>-->
-<!--            <div class="input-group date" id="datepicker" data-target-input="nearest">-->
-<!--                {{ form.date }}-->
-<!--                <div class="input-group-append" data-target="#datepicker" data-toggle="datetimepicker">-->
-<!--                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-        <div id="times"></div>
         <button type="submit">Записаться</button>
     </form>
 </div>
 {% endblock %}
 
-{% block extra_js %}
-{{ block.super }}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<script>
-    // $(function () {
-    //     $('#datepicker').datetimepicker({
-    //         format: 'YYYY-MM-DD',
-    //         daysOfWeekDisabled: [0, 6],
-    //         minDate: moment(),
-    //         allowInputToggle: true,
-    //         useCurrent: false,
-    //         locale: 'ru',
-    //         disabledDates: JSON.parse('{{ disabled_dates|safe }}'),
-    //     });
-    //
-    //     $('#datepicker').on('change.datetimepicker', function () {
-    //         var selectedDate = $(this).find('input').val();
-    //         $.ajax({
-    //             url: '/get_availability/',
-    //             data: {'date': selectedDate},
-    //             dataType: 'json',
-    //             success: function (data) {
-    //                 var times = data.times;
-    //                 var html = '<ul>';
-    //                 for (var i = 0; i < times.length; i++) {
-    //                     html += '<li>' + times[i] + '</li>';
-    //                 }
-    //                 html += '</ul>';
-    //                 $('#times').html(html);
-    //             }
-    //         });
-    //     });
-    // });
-</script>
-{% endblock %}

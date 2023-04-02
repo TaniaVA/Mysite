@@ -2,9 +2,8 @@ import datetime
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
-import json
-from datetime import datetime
-
+from datetime import datetime, timedelta
+from django.http import JsonResponse
 
 
 class Service(models.Model):
@@ -18,6 +17,7 @@ class Service(models.Model):
     def get_absolute_url(self):
         return reverse("service_list")
 
+
 class Master(models.Model):
     name = models.CharField(max_length=150)
     photo = models.ImageField(upload_to='users/', default='users/profile_placeholder.jpg', blank=True)
@@ -27,65 +27,33 @@ class Master(models.Model):
     description = models.CharField(max_length=255, default='Мастер по маникюру и педикюру')
     schedule = models.FileField(upload_to='schedules/', blank=True)
 
-
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
         return reverse("master_list")
 
-    def load_master_schedule(master_id, start_date, end_date):
-        try:
-            master = Master.objects.get(id=master_id)
-        except Master.DoesNotExist:
-            print(f'Master with id {master_id} does not exist')
-            return
+    def get_availability(self, start_date_str, end_date_str):
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
 
-        with open('schedule.py', 'r') as f:
-            schedule_data = json.load(f)
-
-        for date_str, services_schedule in schedule_data.items():
-            date = datetime.strptime(date_str, '%Y-%m-%d').date()
-            if date < start_date or date > end_date:
-                continue
-
-            for service_id, start_time_str in services_schedule.items():
-                service = Service.objects.get(id=service_id)
-                start_time = datetime.strptime(start_time_str, '%H:%M:%S').time()
-
-                if not master.is_available(date, start_time):
-                    continue
-
-                master_schedule = master.schedule.get(str(date), {})
-                master_schedule[str(service_id)] = start_time.strftime('%H:%M:%S')
-                master.schedule[str(date)] = master_schedule
-
-        master.update_availability(start_date, end_date)
-
-    def get_availability(self, date_range):
-        # переменная для хранения пустых слотов
         availability = []
-        # Итерируем по всем датам
-        for day in date_range:
-            day_schedule = self.schedule.get(str(day.date()), {})
-            print(f"Schedule for day {day.date()}: {day_schedule}")
-            # Итерируем по всем услугам
-            for service in self.services.all():
-                # Получаем из get запроса дату начала услуги
-                start_time = day_schedule.get(str(service.id))
-                if not start_time:
-                    continue
-                    #  Высчитаем окончание добавив к начальному времени продолжительность
-                start_time = timezone.make_aware(
-                    datetime.datetime.combine(day.date(), datetime.time.fromisoformat(start_time)))
-                end_time = start_time + service.duration
-                # Если мастер не доступен пропускаем эту итерацию
-                if not self.is_available(day.date(), start_time.time()):
-                    continue
-                    # Составляем список из дат, начала выполнения услуги и окончания
-                availability.append((day.date(), start_time.time(), end_time.time()))
-        return availability
+        for available_date in self.availability:
+            date = datetime.strptime(available_date[0], '%Y-%m-%d').date()
+            start_times = available_date[1:]
 
+            if start_date <= date <= end_date:
+                for start_time in start_times:
+                    start = datetime.strptime(f'{date}T{start_time}', '%Y-%m-%dT%H:%M')
+                    end = start + timedelta(hours=3)  # appointment duration is 3 hours
+
+                    if self.is_available(start):
+                        availability.append({
+                            'start': start.isoformat(),
+                            'end': end.isoformat()
+                        })
+
+        return JsonResponse({'availability': availability})
 
     def update_availability(self, start_date, end_date):
         """
@@ -107,24 +75,6 @@ class Master(models.Model):
         self.availability = availability
         self.save()
 
-    def is_available(self, day, time):
-        """
-        Метод, который проверяет, доступен ли мастер в определенный день и время
-        """
-        start_time = timezone.make_aware(
-            timezone.datetime.combine(day, time)
-        )
-        end_time = start_time + self.services.first().duration
-        appointments = Appointment.objects.filter(
-            master=self,
-            date=day,
-            time__gte=start_time.time(),
-            time__lt=end_time.time()
-        )
-        if appointments.exists():
-            return False
-        else:
-            return True
 
 
 class Appointment(models.Model):
@@ -132,7 +82,6 @@ class Appointment(models.Model):
     master = models.ForeignKey(Master, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
-
 
     # AVAILABLE = 'AV'
     # BOOKED = 'BK'
@@ -151,6 +100,7 @@ class Appointment(models.Model):
 
     def get_absolute_url(self):
         return reverse("appointment_detail", kwargs={"pk": self.pk})
+
 
 class Availability(models.Model):
     master = models.ForeignKey(

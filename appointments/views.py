@@ -12,6 +12,8 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django import forms
 import datetime
+from django.http import JsonResponse
+
 
 class ServiceListView(ListView):
     model = Service
@@ -84,6 +86,13 @@ class MasterUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         master.save()
         return super().form_valid(form)
 
+    def get_available_dates(request):
+        service_id = request.GET.get('service_id')
+        master_id = request.GET.get('master_id')
+        master = Master.objects.get(id=master_id)
+        dates = master.get_available_dates(service_id)
+        return JsonResponse({'dates': dates})
+
 
 class MasterCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Master
@@ -95,7 +104,6 @@ class MasterCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         Test whether the user is a staff member.
         """
         return self.request.user.is_staff
-
 
 class MasterDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Master
@@ -118,34 +126,14 @@ class AppointmentCreateView(CreateView):
     template_name = 'appointment_create.html'
     success_url = reverse_lazy('appointment_detail')
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        # Проверяем, передан ли GET-параметр 'master_id'
-        if 'master_id' in self.request.GET:
-            # Получаем мастера из базы данных
-            master = get_object_or_404(Master, id=self.request.GET['master_id'])
-            # Получаем список доступных временных слотов для этого мастера
-            availability_list = Availability.objects.filter(master=master, date__gte=datetime.date.today()).order_by(
-                'date', 'start_time')
-            # Создаем список временных слотов, который будет отображаться в выпадающем списке
-            time_choices = []
-            for availability in availability_list:
-                time_choices.append((availability.id,
-                                     f'{availability.date} {availability.start_time.strftime("%H:%M")} - {availability.end_time.strftime("%H:%M")}'))
-            # Добавляем поле для выбора времени в форму
-            form.fields['time'].widget = forms.RadioSelect(choices=time_choices)
-        return form
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['service'] = self.request.GET.get('service_id')
+        initial['master'] = self.request.GET.get('master_id')
+        initial['date'] = self.request.GET.get('date')
+        initial['time'] = self.request.GET.get('time')
+        return initial
 
-    def form_valid(self, form):
-        # Получаем выбранный временной слот
-        availability = get_object_or_404(Availability, id=form.cleaned_data['time'])
-        # Создаем объект записи
-        appointment = form.save(commit=False)
-        appointment.master = self.object.master
-        appointment.date = availability.date
-        appointment.time = availability.start_time
-        appointment.save()
-        return super().form_valid(form)
 
 class AppointmentListView(ListView):
     model = Appointment

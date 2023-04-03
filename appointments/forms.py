@@ -5,7 +5,7 @@ from bootstrap_datepicker_plus.widgets import DatePickerInput, TimePickerInput
 class AppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointment
-        fields = ['service', 'date', 'time']
+        fields = ['service', 'master', 'date', 'time']
         widgets = {
             'date': DatePickerInput(),
             'time': TimePickerInput(),

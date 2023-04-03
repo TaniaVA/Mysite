@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="col-4" style="margin: 0 auto;">
+    <h1>Удалить мастера</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>Вы действительно хотите удалить мастера? {{ master.name}}</p>
+        <button class="btn btn-danger" type="submit">Удалить</button>
+    </form>
+</div>
+{% endblock content %}

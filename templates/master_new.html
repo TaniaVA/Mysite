@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Добавить мастера{% endblock title %}
+
+{% block content %}
+<div class="col-5" style="margin: 0 auto;">
+    <h1>Добавить нового мастера</h1>
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+    </form>
+</div>
+{% endblock content %}

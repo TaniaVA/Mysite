@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ object.name }}</h1>
+    {% csrf_token %}
+    {% if appointment %}
+    <div class="row">
+        <p>Вы записаны к мастеру {{ appointment.master.username }} на услугу {{ object.name }} {{ appointment.date }} в
+            {{
+            appointment.time }}.</p>
+        <div class="col-md-8">
+            <p class="lead">{{ object.description }}</p>
+            <p class="lead">Длительность: {{ object.duration }} часа</p>
+            <p class="lead">Цена: {{ object.price }} рублей</p>
+        </div>
+        {% else %}
+        <p>Извините, это время уже занято. Пожалуйста, выберите другое время.</p>
+        <a href="{% url 'appointment_create' %}">Вернуться к созданию записи</a>
+    </div>
+</div>
+    {% endif %}
+    {% endblock %}

@@ -2,17 +2,19 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="col-5" style="margin: 0 auto;">
+<div class="col-8" style="margin: 0 auto;">
     <h1>Выбор мастера</h1>
+    {% if masters %}
     <form action="" method="post">
         {% csrf_token %}
         {{ form|crispy }}
         <div class="row">
             {% for master in masters %}
+            {% with service=master.service %}
             <div class="col">
                 <div class="card text-center" style="width: 20rem">
                     {% if master.photo %}
-                    <img src="{{ master.photo.url }}" class="card-img-top" alt="master photo">
+                    <img src="{{ master.photo.url }}" class="card-img-top" alt="master photo" height="250" width="150">
                     {% else %}
                     <img src="/media/users/profile_placeholder.jpg" alt="master photo">
                     {% endif %}
@@ -21,7 +23,7 @@
                         <p class="card-text">{{ master.description }} </p>
                         <p><a href="tel:+375(33)674-87-15"><i class="bi bi-telephone-fill"></i>+375(33)674-87-15</a></p>
                         <p>
-                            <a href="{% url 'appointment_create' %}?service_id={{ service.id }}&master_id={{ master.id }}&year={{ selected_date.year }}&month={{ selected_date.month }}&day={{ selected_date.day }}&start_hour={{ start_time.hour }}&start_minute={{ start_time.minute }}"
+                            <a href="{% url 'appointment_create' service_pk=service_pk master_pk=master.pk %"
                                class="btn btn-outline-primary">Записаться</a></p>
                         {% if user.is_staff %}
                         <p><a href="{% url 'master_edit' master.pk %}" class="btn btn-outline-info">Изменить мастера</a>
@@ -32,6 +34,7 @@
                     </div>
                 </div>
             </div>
+            {% endwith %}
             {% endfor %}
         </div>
         {% if user.is_staff %}
@@ -40,7 +43,6 @@
         {% endif %}
     </form>
 </div>
+{% endif %}
 {% endblock content %}
-
-
 

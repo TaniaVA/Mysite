@@ -14,11 +14,11 @@
                 <tr>
                     <td>
                         <a class="title {% if service.pk == service_pk %}active{% endif %}"
-                           href="{% url 'service_detail' service.pk %}">{{ service.name }}</a>
+                           href="{% url 'master_list' service.pk %}">{{ service.name }}</a>
                     </td>
                     <td>{{ service.price }} рублей</td>
                     <td>{{ service.duration }} часа</td>
-                    <td><a href="{% url 'service_detail' service.pk %}" class="btn btn-outline-success">Записаться</a></td>
+                    <td><a href="{% url 'master_list' service.pk %}" class="btn btn-outline-success">Записаться</a></td>
                     {% if user.is_staff %}
                     <td><a href="{% url 'service_edit' service.pk %}" class="btn btn-outline-info">Изменить услугу</a></td>
                     <td><a href="{% url 'service_delete' service.pk %}" class="btn btn-outline-warning">Удалить услугу</a></td>

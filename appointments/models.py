@@ -33,6 +33,21 @@ class Master(models.Model):
     def get_absolute_url(self):
         return reverse("master_list")
 
+    def is_available(self, start):
+        """
+        Проверяет, доступен ли мастер на выбранное время
+        """
+        end = start + timedelta(hours=3)  # appointment duration is 3 hours
+
+        for appointment in self.appointment_set.all():
+            appointment_start = datetime.combine(appointment.date, appointment.time)
+            appointment_end = appointment_start + timedelta(hours=3)  # appointment duration is 3 hours
+
+            if start <= appointment_start < end or start < appointment_end <= end:
+                return False
+
+        return True
+
     def get_availability(self, start_date_str, end_date_str):
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
@@ -44,7 +59,7 @@ class Master(models.Model):
 
             if start_date <= date <= end_date:
                 for start_time in start_times:
-                    start = datetime.strptime(f'{date}T{start_time}', '%Y-%m-%dT%H:%M')
+                    start = datetime.strptime(f'{date}T{start_time}', '%Y-%m-%dT%H:%M:%S')
                     end = start + timedelta(hours=3)  # appointment duration is 3 hours
 
                     if self.is_available(start):

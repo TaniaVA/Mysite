@@ -34,7 +34,7 @@
     {% if comment.author.customerphoto_set.last %}
     <img src="{{ comment.author.customerphoto_set.last.photo.url }}" alt="commenter photo" style="border-radius: 15px" height="30">
     {% else %}
-    <img src="/media/users/profile_placeholder.jpg" alt="commenter photo" style="border-radius: 15px" height="30">
+    <img src="/media/users/profile_placeholder.jpg" alt="commenter photo" style="border-radius: 15px" height="30px">
     {% endif %}
     <a href="{% url 'profile' comment.author.pk %}">{{ comment.author }}</a>
      &middot; {{ comment }}</p>

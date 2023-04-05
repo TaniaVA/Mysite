@@ -1,5 +1,5 @@
 from django import forms
-from .models import Master, Appointment
+from .models import Master, Appointment, Service
 from bootstrap_datepicker_plus.widgets import DatePickerInput, TimePickerInput
 
 class AppointmentForm(forms.ModelForm):
@@ -18,6 +18,11 @@ class MasterForm(forms.ModelForm):
         model = Master
         fields = ['name', 'photo', 'description', 'services', 'availability']
 
+class ServiceForm(forms.ModelForm):
+    pass
 
+    class Meta:
+        model = Service
+        fields = ['name', 'price', 'duration', ]
 
 

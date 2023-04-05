@@ -4,14 +4,26 @@
 {% block title %}Profile Page{% endblock title %}
 
 {% block content %}
-<div class="card">
-    <h2>{{ object.username }}</h2>
-    {% if user.customerphoto_set.last %}
+<h2>{{ object.username }}</h2>
+<div>
+    {% if object.customerphoto_set.last %}
     <img src="{{ object.customerphoto_set.last.photo.url }}" alt="commenter photo" style="border-radius: 15px"
          height="150" width="150">
     {% else %}
-    <img src="/users/profile_placeholder.jpg" alt="commenter photo" style="border-radius: 15px" height="150"
+    <img src="media/users/profile_placeholder.jpg" alt="commenter photo" style="border-radius: 15px" height="150"
          width="150">
     {% endif %}
 </div>
+{% for photo in object.customerphoto_set.all %}
+<img src="{{ photo.photo.url }}" alt="commenter photo" style="border-radius: 15px"
+         height="150" width="150">
+{% endfor %}
+{% if user == object %}
+<h4>Добавить картинку</h4>
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-outline-success">Сохранить</button>
+</form>
+{% endif %}
 {% endblock content %}

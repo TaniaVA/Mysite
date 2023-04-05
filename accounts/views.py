@@ -1,11 +1,14 @@
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView, DetailView
+from django.urls import reverse_lazy, reverse
+from django.views.generic import CreateView, TemplateView, FormView, DetailView
 from django.views.generic.edit import UpdateView
-from django.core.files.storage import default_storage
+from django.views.generic.detail import SingleObjectMixin
+from django.views import View
 from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, CustomerPhotoForm
 from .models import CustomUser
+
 
 # Create your views here.
 class SignUpView(CreateView):
@@ -13,37 +16,49 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('login')
     template_name = "registration/signup.html"
 
+
 class ContactFormView(TemplateView):
     template_name = "registration/contact_form.html"
 
-class ProfilePage(DetailView):
+
+
+class PhotoGet(DetailView):
     model = CustomUser
     template_name = "accounts/profile_page.html"
 
-class UpdateProfile(UpdateView):
-    """
-    Update an existing Profile object.
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CustomerPhotoForm()
+        return context
 
-    Returns:
-    A rendered UpdateView of an existing profile object.
-    """
+class ImagePost(SingleObjectMixin, FormView):
     model = CustomUser
-    template_name = "profile_edit.html"
-    fields = ['username', 'email', 'image', ]
+    form_class = CustomerPhotoForm
+    template_name = "accounts/profile_page.html"
 
-    def test_func(self):
-        obj = self.get_object()
-        return obj.author == self.request.user
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
-        # Получаем объект блога из базы данных
-        blog = form.save(commit=False)
-        # Получаем загруженное изображение из формы
-        image = form.cleaned_data['image']
-        # Если загружено изображение, то сохраняем его в файловой системе
-        if image:
-            file_name = default_storage.save(image.name, ContentFile(image.read()))
-            blog.image = file_name
-        # Сохраняем изменения в базе данных
-        blog.save()
+        photo = form.save(commit=False)
+        photo.user = self.object
+        if 'photo' in self.request.FILES:
+            photo.photo = self.request.FILES['photo']
+        photo.save()
         return super().form_valid(form)
+
+    def get_success_url(self):
+        user = self.get_object()
+        return reverse("profile", kwargs={"pk": user.pk})
+
+
+class ProfilePage(View):
+
+    def get(self, request, *args, **kwargs):
+        view = PhotoGet.as_view()
+        return view(request, *args, **kwargs)
+
+    def post(self,request, *args, **kwargs):
+        view = ImagePost.as_view()
+        return view(request, *args, **kwargs)

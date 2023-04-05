@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.views.i18n import JavaScriptCatalog
 from django.conf.urls.static import serve
 
+
 urlpatterns = [
     path('schedule/', include('schedule.urls')),
     path('admin/', admin.site.urls),
@@ -26,6 +27,7 @@ urlpatterns = [
     path('accounts/', include("django.contrib.auth.urls")),
     path('appointments/', include('appointments.urls')),
     path('blog/', include('blog.urls')),
+    path('frontend/', include('frontend.urls')),
     path('', include('frontend.urls')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 ]

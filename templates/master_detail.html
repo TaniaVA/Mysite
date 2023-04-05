@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>{{ master.name }}</h1>
+            {% if master.photo %}
+            <img src="{{ master.photo.url }}" class="card-img-top" alt="master photo" style="width: 18rem;">
+            {% else %}
+            <img src="/media/users/profile_placeholder.jpg" alt="master photo">
+            {% endif %}
+            <p class="lead">{{ master.description }}</p>
+            <a href="{% url 'appointment_create' service_id=service.pk pk=master.pk %}"
+               class="btn btn-outline-success">Записаться</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

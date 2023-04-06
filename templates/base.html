@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>{% block title %}Студия маникюра и педикюра "broNNaiL" в Гродно{% endblock title %}</title>
+    <meta name="description"
+          content="Студия маникюра и педикюра 'broNNaiL' в Гродно. Мастер, которого ты так долго искала!">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'jquery-ui-1.13.2.custom/jquery-ui.structure.min.css' %}">
+    <link rel="stylesheet" href="{% static 'jquery-ui-1.13.2.custom/jquery-ui.min.css' %}">
+    <link rel="stylesheet" href="{% static 'jquery-ui-1.13.2.custom/jquery-ui.theme.min.css' %}">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+</head>
+<body>
+<header class="p-3 mb-3 border-bottom">
+    <nav class="navbar navbar-expand-lg navbar-light bg-muted">
+        <div class="container-fluid">
+            <!-- Логотип -->
+            <a class="navbar-brand text-dark" href="{% url 'home' %}">broNNaiL</a>
+            <!-- Кнопка для раскрытия меню на маленьких экранах -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Контейнер с элементами навигации -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'home' %}">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'service_list' %}">Услуги</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Галерея</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'blog_list' %}">Будь в курсе</a>
+                    </li>
+                </ul>
+                <!-- Контейнер для ссылок на телефон и почту -->
+                <div class="d-flex align-items-center">
+                    <div class="my-auto px-3">
+                        <a href="tel:+375(33)674-87-15"><i class="bi bi-telephone-fill"></i>+375(33)674-87-15</a>
+                    </div>
+                    <div class="my-auto px-3">
+                        <a href="mailto:broNNaiL_A@mail.ru"><i class="bi bi-envelope-fill"></i>broNNaiL_A@mail.ru</a>
+                    </div>
+                </div>
+                {% if user.is_authenticated %}
+                <!-- Контейнер для ссылок на формы -->
+                <div class="nav-item dropdown my-auto px-3">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        {{ user.username}}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'password_change' %}">Изменить пароль</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
+                    </ul>
+                    {% else %}
+                    <div class="d-flex flex-column">
+                        <div class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Войти</a>
+                        </div>
+                        <div class="nav-item">
+                            <a class="nav-link" href="{% url 'signup' %}">Регистрация</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="p-3 mb-10">
+    <main>
+        {% block content %}
+        {% endblock content %}
+    </main>
+</div>
+{% block extra_js %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/jquery-ui@1.12.1/dist/jquery-ui.min.js"></script>
+<script>
+    $(function () {
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            daysOfWeekDisabled: [0, 6],
+            startDate: new Date(),
+            autoclose: true,
+            todayHighlight: true,
+            beforeShowDay: function (date) {
+                var availableDates = "{{ available_dates|escapejs }}";
+                var dateString = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+                if (availableDates.indexOf(dateString) != -1) {
+                    return {
+                        enabled: true
+                    };
+                } else {
+                    return {
+                        enabled: false
+                    };
+                }
+            }
+        });
+    });
+
+    $('#date-form').on('submit', function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: '/get_available_times/',
+            data: $('#date-form').serialize(),
+            success: function (data) {
+                var times = data.times;
+                var html = '<ul>';
+                for (var i = 0; i < times.length; i++) {
+                    html += '<li>' + times[i] + '</li>';
+                }
+                html += '</ul>';
+                $('#times').html(html);
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'jquery-ui-1.13.2.custom/jquery-ui.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+{{ block.super }}
+{{ form.media }}
+<div class="container">
+    <h1 class="mb-3">Записаться к мастеру на услугу</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="hidden" name="service" value="{{ service_id }}">
+        <input type="hidden" name="master" value="{{ pk }}">
+        <label for="date">Дата:</label>
+        <select name="date" id="id_date"></select>
+        <label for="time">Время:</label>
+        <select name="time" id="id_time">
+            {% for time in form.time.field.choices %}
+            <option value="{{ time.0 }}">{{ time.1 }}</option>
+            {% endfor %}
+        </select>
+        <p><a href="{% url 'appointment_create_success' %}" class="btn btn-outline-success"> Записаться</a></p>
+    </form>
+</div>
+{% endblock %}
+

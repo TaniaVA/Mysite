@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Home Page{% endblock title %}
+
+{% block content %}
+
+<style>
+    body {
+        background: url('/media/images/base.jpg') no-repeat;
+        -moz-background-size: cover; /* Firefox 3.6+ */
+        -webkit-background-size: cover; /* Safari 3.1+ и Chrome 4.0+ */
+        -o-background-size: cover; /* Opera 9.6+ */
+        background-size: cover; /* Современные браузеры */
+    }
+
+    .blockquote {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #6C6C91;
+        text-align: center;
+    }
+</style>
+<div class="container">
+    <div class="row d-flex">
+        <div class="col-lg-8 px-md-5 py-5">
+            <div class="row pt-md-4">
+                <div class="right flex-1">
+                <div class="blockquote">
+                    <blockquote>- Ты же понимаешь, что прошлое уже не вернуть. И хватит за него цепляться. Подумай
+                        хоть капельку о себе.
+                    </blockquote>
+                    <blockquote>- Легко сказать, но как? Что нужно сделать, чтобы не цепляться?</blockquote>
+                    <blockquote> - Для начала сделай маникюр.</blockquote>
+                    <cite>Ринат Валиуллин"Все ее удовольствия" Трилогия "Не"</cite>
+                    <div><a href="{% url 'service_list' %}" class="btn btn-outline-success">Записаться</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock content %}
+

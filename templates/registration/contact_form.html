@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Войти{% endblock title %}
+
+{% block content %}
+<h2>Контактная форма</h2>
+<div class="col-3">
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="p-3 mb-15">
+            <label for="fname">Имя</label>
+            <input type="text" id="fname" name="firstname" placeholder="Ваше имя..">
+        </div>
+        <div class="p-3 mb-15">
+            <label for="lname">Фамилия</label>
+            <input type="text" id="lname" name="lastname" placeholder="Ваша фамилия..">
+        </div>
+        <div class="p-3 mb-15">
+            <label for="subject">Сообщение</label>
+            <textarea id="subject" name="subject" placeholder="Написать нечто.." style="height:200px"></textarea>
+        </div>
+        <button class="btn btn-success" type="submit">Отправить</button>
+    </form>
+</div>
+{% endblock content %}

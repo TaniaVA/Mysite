@@ -2,6 +2,17 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+
+<style>
+    body {
+        background: url('/media/images/1626996593_10-p-fon-dlya-vizitki-rozovii-10.jpg') no-repeat;
+        -moz-background-size: cover; /* Firefox 3.6+ */
+        -webkit-background-size: cover; /* Safari 3.1+ и Chrome 4.0+ */
+        -o-background-size: cover; /* Opera 9.6+ */
+        background-size: cover; /* Современные браузеры */
+    }
+
+</style>
 <div class="container">
     <h1>{{ object.name }}</h1>
     <form action="{% url 'master_list' service.pk %}" method="post">

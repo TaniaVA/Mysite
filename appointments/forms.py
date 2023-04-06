@@ -2,6 +2,7 @@ from django import forms
 from .models import Master, Appointment, Service
 from django.forms import TimeField
 
+# Time selection field for the appointment form.
 class TimeSelectField(TimeField):
     widget = forms.Select
 
@@ -9,7 +10,7 @@ class TimeSelectField(TimeField):
         super().__init__(**kwargs)
         self.widget.choices = choices
 
-
+# A form to create an appointment.
 class AppointmentForm(forms.ModelForm):
     time = TimeSelectField(choices=[])
 
@@ -21,7 +22,7 @@ class AppointmentForm(forms.ModelForm):
             'time': forms.TimeInput(attrs={'type': 'time'}),
         }
 
-
+# Form to create a master.
 class MasterForm(forms.ModelForm):
     pass
 
@@ -29,7 +30,7 @@ class MasterForm(forms.ModelForm):
         model = Master
         fields = ['name', 'photo', 'description', 'services', 'availability']
 
-
+# Form to create a sevice.
 class ServiceForm(forms.ModelForm):
     pass
 

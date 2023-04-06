@@ -20,7 +20,7 @@
             <option value="{{ time.0 }}">{{ time.1 }}</option>
             {% endfor %}
         </select>
-        <button type="submit" class="btn btn-outline-success">Записаться</button>
+        <p><a href="{% url 'appointment_create_success' %}" class="btn btn-outline-success"> Записаться</a></p>
     </form>
 </div>
 {% endblock %}

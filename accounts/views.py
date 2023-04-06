@@ -10,18 +10,20 @@ from .forms import CustomUserCreationForm, CustomerPhotoForm
 from .models import CustomUser
 
 
-# Create your views here.
+# A view that renders a form to register a new user. On successful submission,
+# it creates a new user and redirects to the login page.
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
     template_name = "registration/signup.html"
 
-
+# A simple view that renders a form for users to submit a contact request.
 class ContactFormView(TemplateView):
     template_name = "registration/contact_form.html"
 
 
-
+#  A view that displays the profile page for a specific user, along with
+#  a form to upload a profile picture.
 class PhotoGet(DetailView):
     model = CustomUser
     template_name = "accounts/profile_page.html"
@@ -31,6 +33,8 @@ class PhotoGet(DetailView):
         context['form'] = CustomerPhotoForm()
         return context
 
+# A view that handles the submission of the profile picture form for a specific user.
+# It saves the picture to the database and redirects to the profile page.
 class ImagePost(SingleObjectMixin, FormView):
     model = CustomUser
     form_class = CustomerPhotoForm
@@ -52,7 +56,9 @@ class ImagePost(SingleObjectMixin, FormView):
         user = self.get_object()
         return reverse("profile", kwargs={"pk": user.pk})
 
-
+# A view that handles both GET and POST requests for the profile page.
+# On a GET request, it displays the profile page for the user.
+# On a POST request, it handles the submission of the profile picture form.
 class ProfilePage(View):
 
     def get(self, request, *args, **kwargs):

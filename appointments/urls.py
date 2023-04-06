@@ -14,6 +14,6 @@ urlpatterns = [
     path('services/<int:service_id>/masters/<int:pk>/update/', MasterUpdateView.as_view(), name='master_update'),
     path('services/<int:service_id>/masters/<int:pk>/delete/', MasterDeleteView.as_view(), name='master_delete'),
     path('services/<int:service_id>/masters/<int:pk>/', MasterDetailView.as_view(), name='master_detail'),
-    path('services/<int:service_id>/masters/<int:pk>/appointments/create/', AppointmentCreateView.as_view(), name='appointment_create'),
+    path('services/<int:service_id>/masters/<int:pk>/create/', AppointmentCreateView.as_view(), name='appointment_create'),
     path('appointments/success/', AppointmentCreateSuccessView.as_view(), name='appointment_create_success'),
 ]

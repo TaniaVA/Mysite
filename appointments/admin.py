@@ -5,6 +5,7 @@ from .models import Appointment
 # Register your models here.
 admin.site.register(Appointment)
 
+# Admin configuration for the Service model
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ('name', 'duration', 'price')
@@ -12,6 +13,7 @@ class ServiceAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     pass
 
+# Admin configuration for the Master model
 @admin.register(Master)
 class MasterAdmin(admin.ModelAdmin):
     pass

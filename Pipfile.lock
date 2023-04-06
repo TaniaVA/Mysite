@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "4c4493292212d1d21be360de96a52c83a4ff7b1a79205c7e850c038d3e04cc72"
+            "sha256": "c6dafe16ad79531b7bfa8c492ea7804b3a6295f9797a51e766b45a2cab0c8909"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -95,6 +95,13 @@
             ],
             "index": "pypi",
             "version": "==2.0"
+        },
+        "django-datetime-widget": {
+            "hashes": [
+                "sha256:bd727b466b7f4bbc23f3a9ec571ef1e2e9977ef1b83a296eb7b796580a168ced"
+            ],
+            "index": "pypi",
+            "version": "==0.9.3"
         },
         "django-jquery": {
             "hashes": [

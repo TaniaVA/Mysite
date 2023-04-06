@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (AppointmentCreateView, MasterListView, MasterDetailView, MasterCreateView, MasterUpdateView,
-                    MasterDeleteView, ServiceListView, ServiceCreateView, ServiceUpdateView, ServiceDeleteView, ServiceDetailView)
+                    MasterDeleteView, ServiceListView, ServiceCreateView, ServiceUpdateView, ServiceDeleteView, ServiceDetailView,
+                    AppointmentCreateSuccessView)
 
 urlpatterns = [
     path('services/', ServiceListView.as_view(), name='service_list'),
@@ -14,4 +15,5 @@ urlpatterns = [
     path('services/<int:service_id>/masters/<int:pk>/delete/', MasterDeleteView.as_view(), name='master_delete'),
     path('services/<int:service_id>/masters/<int:pk>/', MasterDetailView.as_view(), name='master_detail'),
     path('services/<int:service_id>/masters/<int:pk>/appointments/create/', AppointmentCreateView.as_view(), name='appointment_create'),
+    path('appointments/success/', AppointmentCreateSuccessView.as_view(), name='appointment_create_success'),
 ]

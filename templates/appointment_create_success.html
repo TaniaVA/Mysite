@@ -7,6 +7,9 @@
     {% csrf_token %}
     {% if appointment %}
     <div class="row">
+        {% if date and time %}
+        <p>Запись успешно создана! Мы Вас ждем {{ date }} в {{ time }} часов.</p>
+        {% endif %}
         <p>Вы записаны к мастеру {{ appointment.master.username }} на услугу {{ object.name }} {{ appointment.date }} в
             {{
             appointment.time }}.</p>

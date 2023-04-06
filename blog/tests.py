@@ -94,6 +94,7 @@ class BlogTests(TestCase):
         self.assertEqual(Blog.objects.last().title, "Updated Title")
         self.assertEqual(Blog.objects.last().body, "Updated text")
 
+
     def test_blog_deleteview(self):
         """
         Test for checking blog delete using DeleteView

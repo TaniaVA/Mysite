@@ -1,9 +1,9 @@
 import datetime
 from django.db import models
-from django.utils import timezone
 from django.urls import reverse
 from datetime import datetime, timedelta
 from django.http import JsonResponse
+from django.utils import timezone
 
 
 class Service(models.Model):
@@ -33,62 +33,37 @@ class Master(models.Model):
     def get_absolute_url(self):
         return reverse("master_list")
 
-    def is_available(self, start):
-        """
-        Проверяет, доступен ли мастер на выбранное время
-        """
-        end = start + timedelta(hours=3)  # appointment duration is 3 hours
+    def get_schedule_dict(self):
+        # получаем все записи по данному мастеру
+        appointments = Appointment.objects.filter(master=self)
 
-        for appointment in self.appointment_set.all():
-            appointment_start = datetime.combine(appointment.date, appointment.time)
-            appointment_end = appointment_start + timedelta(hours=3)  # appointment duration is 3 hours
+        # создаем словарь с расписанием
+        schedule_dict = {}
+        for i in range(10):
+            # вычисляем дату i-го дня от сегодняшней даты
+            date = timezone.now().date() + timedelta(days=i)
+            # создаем словарь для расписания на эту дату
+            schedule = {}
+            for j in range(9, 20):
+                # проверяем, что j находится в нужном диапазоне
+                if j < 9 or j >= 19:
+                    continue
+                # вычисляем время j-го часа
+                dt = datetime(year=2023, month=4, day=6, hour=j)
+                time = dt.time()
+                # проверяем, свободно ли это время
+                is_available = True
+                for appointment in appointments:
+                    if appointment.date == date and appointment.time == time:
+                        is_available = False
+                        break
+                # добавляем запись в словарь расписания
+                schedule[str(time)] = 'available' if is_available else 'unavailable'
+            # добавляем словарь расписания на эту дату в общий словарь
+            schedule_dict[str(date)] = schedule
+        return schedule_dict
 
-            if start <= appointment_start < end or start < appointment_end <= end:
-                return False
-
-        return True
-
-    def get_availability(self, start_date_str, end_date_str):
-        start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-
-        availability = []
-        for available_date in self.availability:
-            date = datetime.strptime(available_date[0], '%Y-%m-%d').date()
-            start_times = available_date[1:]
-
-            if start_date <= date <= end_date:
-                for start_time in start_times:
-                    start = datetime.strptime(f'{date}T{start_time}', '%Y-%m-%dT%H:%M:%S')
-                    end = start + timedelta(hours=3)  # appointment duration is 3 hours
-
-                    if self.is_available(start):
-                        availability.append({
-                            'start': start.isoformat(),
-                            'end': end.isoformat()
-                        })
-
-        return JsonResponse({'availability': availability})
-
-    def update_availability(self, start_date, end_date):
-        """
-        Метод, который будет обновлять поле availability на основе
-        выбранных мастером дней и времени выполнения услуг
-        """
-        # days - список дней, в которые доступен мастер
-        # time - время выполнения услуги
-        availability = []
-        for d in range((end_date - start_date).days + 1):
-            day = start_date + datetime.timedelta(days=d)
-            day_schedule = self.schedule.get(str(day), {})
-            for service in self.services.all():
-                start_time = day_schedule.get(str(service.id), '09:00')
-                start_time = timezone.make_aware(
-                    datetime.datetime.combine(day, datetime.time.fromisoformat(start_time)))
-                end_time = start_time + service.duration
-                availability.append((day, start_time.time(), end_time.time()))
-        self.availability = availability
-        self.save()
+        return schedule_dict
 
 
 
@@ -98,17 +73,6 @@ class Appointment(models.Model):
     date = models.DateField()
     time = models.TimeField()
 
-    # AVAILABLE = 'AV'
-    # BOOKED = 'BK'
-    # STATUS_CHOICES = [
-    #     (AVAILABLE, 'Available'),
-    #     (BOOKED, 'Booked')
-    # ]
-    # status = models.CharField(
-    #     max_length=2,
-    #     choices=STATUS_CHOICES,
-    #     default=AVAILABLE
-    # )
 
     def __str__(self):
         return f'{self.service} with {self.master} on {self.date} at {self.time}'

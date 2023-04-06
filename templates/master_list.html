@@ -23,13 +23,13 @@
                         <p class="card-text">{{ master.description }} </p>
                         <p><a href="tel:+375(33)222-88-99"><i class="bi bi-telephone-fill"></i>+375(33)222-88-99</a></p>
                         <p>
-                            <a href="{% url 'master_detail' service_id=service.pk pk=master.pk %}">Записаться</a>"
-                            class="btn btn-outline-primary">Записаться</a></p>
+                            <a href="{% url 'master_detail' service_id=service.pk pk=master.pk %}"
+                               class="btn btn-outline-primary">Записаться</a></p>
                         {% if user.is_staff %}
-                        <p><a href="{% url 'master_update' master.pk %}" class="btn btn-outline-info">Изменить
+                        <p><a href="{% url 'master_update' service_id=service.pk pk=master.pk %}" class="btn btn-outline-info">Изменить
                             мастера</a>
                         </p>
-                        <p><a href="{% url 'master_delete' master.pk %}" class="btn btn-outline-warning">Удалить
+                        <p><a href="{% url 'master_delete' service_id=service.pk pk=master.pk %}" class="btn btn-outline-warning">Удалить
                             мастера</a></p>
                         {% endif %}
                     </div>
@@ -38,7 +38,7 @@
             {% endfor %}
         </div>
         {% if user.is_staff %}
-        <p style="margin: 25px;"><a href="{% url 'master_create' %}" class="btn btn-outline-success"> Добавить
+        <p style="margin: 25px;"><a href="{% url 'master_create' service_id=service.pk %}" class="btn btn-outline-success"> Добавить
             мастера</a>
         </p>
         {% endif %}

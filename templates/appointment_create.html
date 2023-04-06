@@ -4,41 +4,24 @@
 {% block content %}
 {{ block.super }}
 {{ form.media }}
-<div class="col-6" style="margin: 0 auto;">
-    <h1>Записаться на услугу</h1>
-    <form action="" method="post">
+<div class="container">
+    <h1 class="mb-3">Записаться к мастеру на услугу</h1>
+
+    <form method="post">
         {% csrf_token %}
         {{ form|crispy }}
         <input type="hidden" name="service" value="{{ service_id }}">
         <input type="hidden" name="master" value="{{ pk }}">
-        <input type="date" name="date" value="{{ date }}">
-        <div id="{{ calendar_data.id }}"></div>
-        <button type="submit">Записаться</button>
+        <label for="date">Дата:</label>
+        <select name="date" id="id_date"></select>
+        <label for="time">Время:</label>
+        <select name="time" id="id_time">
+            {% for time in form.time.field.choices %}
+            <option value="{{ time.0 }}">{{ time.1 }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-outline-success">Записаться</button>
     </form>
 </div>
 {% endblock %}
-<script>
-    function get_available_dates() {
-        var service_id = document.getElementById("id_service").value;
-        var master_id = document.getElementById("id_master").value;
-        var url = '/get_available_dates/?service_id=' + service_id + '&master_id=' + master_id;
 
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                var select = document.getElementById("date");
-                select.options.length = 1; // Remove all previous options
-                data.forEach(date => {
-                    var option = document.createElement("option");
-                    option.value = date;
-                    option.text = date;
-                    select.add(option);
-                });
-            });
-    }
-
-    // Call get_available_dates when the service or master select boxes are changed
-    document.getElementById("id_service").addEventListener("change", get_available_dates);
-    document.getElementById("id_master").addEventListener("change", get_available_dates);
-</script>
-{% endblock %}

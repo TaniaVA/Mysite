@@ -1,47 +1,64 @@
-from datetime import datetime, timedelta, time
-from .models import Master
+SCHEDULES = {
+    '2023-04-10': {
+        '10:00': 'available',
+        '13:00': 'available',
+        '16:00': 'available',
+        '19:00': 'unavailable',
 
-# Создаем объект расписания
-schedule = {
-    "2023-04-03": {
-        "1": "10:00:00",
-        "2": "13:00:00",
-        "3": "16:00:00",
-        "4": "19:00:00"
     },
-    "2023-04-04": {
-        "1": "9:00:00",
-        "2": "12:00:00",
-        "3": "15:00:00",
-        "4": "18:00:00",
+    '2023-04-11': {
+        '9:00': 'available',
+        '12:00': 'available',
+        '15:00': 'available',
+        '18:00': 'unavailable',
+
+    },'2023-04-12': {
+        '10:00': 'available',
+        '13:00': 'available',
+        '16:00': 'available',
+        '19:00': 'unavailable',
+
+    },'2023-04-13': {
+        '9:00': 'available',
+        '13:00': 'available',
+        '16:00': 'available',
+        '18:00': 'unavailable',
+
+    },'2023-04-14': {
+        '11:00': 'available',
+        '14:00': 'available',
+        '17:00': 'available',
+
+
+    },'2023-04-17': {
+        '10:00': 'available',
+        '13:00': 'available',
+        '16:00': 'available',
+        '19:00': 'unavailable',
+
+    },'2023-04-18': {
+        '9:00': 'available',
+        '12:00': 'available',
+        '15:00': 'available',
+        '18:00': 'unavailable',
+
+    },'2023-04-19': {
+        '10:00': 'available',
+        '13:00': 'available',
+        '16:00': 'available',
+        '18:00': 'unavailable',
+
+    },'2023-04-20': {
+        '9:00': 'available',
+        '13:00': 'available',
+        '16:00': 'available',
+
+    },'2023-04-21': {
+        '10:00': 'available',
+        '12:00': 'available',
+        '15:00': 'available',
+        '19:00': 'unavailable',
+
     },
-    "2023-04-05": {
-        "2": "10:00:00",
-        "3": "12:00:00",
-        "4": "14:00:00",
-        "5": "16:00:00"
-    },
-    "2023-04-06": {
-        "1": "9:00:00",
-        "2": "12:00:00",
-        "3": "15:00:00",
-        "4": "18:00:00",
-    },
-    "2023-04-07": {
-        "1": "12:00:00",
-        "2": "14:00:00",
-        "3": "17:00:00",
-    }
+    # ...
 }
-
-# Определяем рабочие часы мастера
-start_time = time(10, 0)
-end_time = time(20, 0)
-
-# Определяем длительность услуги
-duration = timedelta(hours=3)
-
-# Определяем диапазон дат, на которые доступно расписание
-date_range = [datetime(2023, 4, 3).date() + timedelta(days=i) for i in range(5)]
-
-availability = Master.get_availability(date_range)

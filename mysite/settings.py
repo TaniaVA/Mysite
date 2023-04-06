@@ -43,10 +43,9 @@ INSTALLED_APPS = [
     # crispies
     "crispy_forms",
     "crispy_bootstrap5",
-    # libraries
+     # libraries
     'schedule',
-    'djangobower',
-    # my apps
+     # my apps
     'accounts',
     'frontend',
     'blog',
@@ -157,10 +156,3 @@ DEFAULT_FROM_EMAIL = 'bronnail_a@mail.ru'
 
 TEMPLATE_CONTEXT_PROCESSORS = "django.template.context_processors.request"
 
-BOWER_COMPONENTS_ROOT = '/PROJECT_ROOT/components/'
-
-BOWER_INSTALLED_APPS = (
-    'jquery',
-    'jquery-ui',
-    'bootstrap'
-)

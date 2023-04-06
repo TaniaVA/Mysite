@@ -1,3 +1,5 @@
+import json
+
 from django.contrib import messages
 
 from django.shortcuts import get_object_or_404, redirect, render
@@ -196,7 +198,7 @@ class AppointmentCreateView(CreateView):
                 if status == 'available':
                     available_times.append((time, time))
         context['form'].fields['time'].widget.choices = available_times
-
+        context['schedule'] = schedule_dict
         context['object'] = self.object
 
         return context

@@ -67,7 +67,7 @@ class Master(models.Model):
                         break
                 # добавляем запись в словарь расписания
                 schedule[str(time)] = 'available' if is_available else 'unavailable'
-            # добавляем словарь расписания на эту дату в общий словарь
+                # добавляем словарь расписания на эту дату в общий словарь
             schedule_dict[str(date)] = schedule
         return schedule_dict
 

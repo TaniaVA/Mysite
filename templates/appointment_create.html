@@ -12,16 +12,41 @@
         {{ form|crispy }}
         <input type="hidden" name="service" value="{{ service_id }}">
         <input type="hidden" name="master" value="{{ pk }}">
-        <label for="date">Дата:</label>
-        <select name="date" id="id_date"></select>
-        <label for="time">Время:</label>
-        <select name="time" id="id_time">
-            {% for time in form.time.field.choices %}
-            <option value="{{ time.0 }}">{{ time.1 }}</option>
-            {% endfor %}
-        </select>
         <p><a href="{% url 'appointment_create_success' %}" class="btn btn-outline-success"> Записаться</a></p>
     </form>
 </div>
+<p id="schedule" hidden="hidden">{{ schedule }}</p>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  // JavaScript code
+  const dictString = document.getElementById('schedule').textContent;
+  const timesDict = eval("(" + dictString + ")");
+  const dateInput = document.getElementById('id_date');
+  const timeSelect = document.getElementById('id_time');
+
+  // Listen for changes on the date input
+  dateInput.addEventListener('change', () => {
+    // Get the selected date
+    const selectedDate = dateInput.value;
+
+    // Clear the time select options
+    timeSelect.innerHTML = '';
+
+    // Check if the selected date is in the dictionary
+    if (timesDict.hasOwnProperty(selectedDate)) {
+      // Get the available times for the selected date
+      const availableTimes = Object.keys(timesDict[selectedDate])
+        .filter(time => timesDict[selectedDate][time] === 'available');
+
+      // Update the time select options
+      timeSelect.innerHTML = availableTimes
+        .map(time => `<option value="${time}">${time}</option>`)
+        .join('');
+    }
+  });
+</script>
+
 {% endblock %}
 
